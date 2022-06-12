@@ -13,6 +13,26 @@ export default function HomeSetting() {
     const [info,setInfo] = useState({});
     const [showcase,setShowcase] = useState({});
 
+    const saveShowcase = async (e)=>{
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const {data:response} = await axios.post(`${SERVER_URL}/showcase/1`,formData,{
+        headers:{
+          "content-type":"mutlipart/formdata"
+        }
+      });
+      if(response.error){
+        console.log(response.error);
+        return;
+    }
+    if(!response.success){
+        console.log(response.message);
+        return;
+    }
+    return navigate("/admin/dashboard");
+
+    }
+
     const fetchShowcase = async ()=>{
       const {data:response} = await axios.get(`${SERVER_URL}/showcase/1`);
     
@@ -45,7 +65,21 @@ export default function HomeSetting() {
 
     const saveInfo = async (e)=>{
       e.preventDefault();
-      // TODO
+      const formData = new FormData(e.target);
+      const {data:response} = await axios.post(`${SERVER_URL}/info/edit/1`,formData,{
+        headers:{
+          "content-type":"mutlipart/formdata"
+        }
+      });
+      if(response.error){
+        console.log(response.error);
+        return;
+    }
+    if(!response.success){
+        console.log(response.message);
+        return;
+    }
+    return navigate("/admin/dashboard");
     }
 
     const fetchCTA = async()=>{
@@ -66,12 +100,31 @@ export default function HomeSetting() {
     const saveCTA = async (e)=>{
       e.preventDefault();
       const formData = new FormData(e.target);
-      // TODO
+      const {data:response} = await axios.post(`${SERVER_URL}/cta/edit/1`,formData,{
+        headers:{
+          "content-type":"mutlipart/formdata"
+        }
+      });
+      if(response.error){
+        console.log(response.error);
+        return;
+    }
+    if(!response.success){
+        console.log(response.message);
+        return;
+    }
+    return navigate("/admin/dashboard");
+      
     }
 
     const saveHero = async (e)=>{
         e.preventDefault();
-        const {data:response} = await axios.post(`${SERVER_URL}/edit/1`,{...hero});
+        const formData = new FormData(e.target)
+        const {data:response} = await axios.post(`${SERVER_URL}/hero/edit/1`,formData,{
+          headers:{
+            "content-type":"multipart/formdata"
+          }
+        });
 
         if(response.error){
             console.log(response.error);
@@ -129,6 +182,7 @@ export default function HomeSetting() {
                   <input
                     type="text"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                    name="headline"
                     defaultValue={ hero.headline}
                     onChange={e=>setHero({...hero,headline:e.target.value})}
                   />
@@ -144,6 +198,7 @@ export default function HomeSetting() {
                   </label>
                   <textarea
                     type="text"
+                    name="subText"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                     defaultValue={hero.subText}
                     onChange={(e)=>setHero({...hero,subText:e.target.value})}
@@ -160,6 +215,7 @@ export default function HomeSetting() {
                     Hero Background Image
                   </label>
                   <input
+                  name="bgImage"
                     type="file"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                   />
@@ -191,6 +247,7 @@ export default function HomeSetting() {
                   <input
                     type="text"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                    name="title"
                     onChange={(e)=>setCTA({...cta,title:e.target.value})}
                     defaultValue={cta.title}
                   />
@@ -206,6 +263,7 @@ export default function HomeSetting() {
                   </label>
                   <textarea
                     type="text"
+                    name="paragraph1"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                     defaultValue={cta.paragraph1}
                     onChange={(e)=>setCTA({...cta,paragraph1:e.target.value})}
@@ -224,6 +282,7 @@ export default function HomeSetting() {
                   <textarea
                     type="text"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                    name="paragraph2"
                     defaultValue={cta.paragraph2}
                     onChange={(e)=>setCTA({...cta,paragraph2:e.target.value})}
                     rows="4"
@@ -240,6 +299,7 @@ export default function HomeSetting() {
                   </label>
                   <input
                     type="text"
+                    name="ctaLinkTitle"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                     onChange={(e)=>setCTA({...cta,ctaLinkTitle:e.target.value})}
                     defaultValue={cta.ctaLinkTitle}
@@ -254,7 +314,7 @@ export default function HomeSetting() {
                   >
                     Call To Action Link
                   </label>
-                  <select onChange={e=>setCTA({...cta,ctaLink:e.target.value})}>
+                  <select onChange={e=>setCTA({...cta,ctaLink:e.target.value})} name="ctaLink">
                     <option value={"/register"}>Register</option>
                     <option value={"/contact"}>Contact Us</option>
                   </select>
@@ -271,6 +331,7 @@ export default function HomeSetting() {
                   <input
                     type="text"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                    name="sectionHeadline"
                     onChange={(e)=>setCTA({...cta,sectionHeadline:e.target.value})}
                     defaultValue={cta.sectionHeadline}
                   />
@@ -285,6 +346,7 @@ export default function HomeSetting() {
                     Section Paragraph
                   </label>
                   <textarea
+                    name="sectionParagraph"
                     type="text"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                     defaultValue={cta.sectionParagraph}
@@ -335,6 +397,7 @@ export default function HomeSetting() {
                   <input
                     type="text"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                    name="headline"
                     onChange={(e)=>setInfo({...info,headline:e.target.value})}
                     defaultValue={info.headline}
                   />
@@ -350,6 +413,7 @@ export default function HomeSetting() {
                   </label>
                   <textarea
                     type="text"
+                    name="text"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                     defaultValue={info.text}
                     onChange={e=>setInfo({...info,text:e.target.value})}
@@ -367,6 +431,7 @@ export default function HomeSetting() {
                   </label>
                   <input
                     type="file"
+                    name="image"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                   />
                 </div>
@@ -384,7 +449,7 @@ export default function HomeSetting() {
             <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
               Showcase Section
             </h6>
-            <form>
+            <form onSubmit={saveShowcase}>
             <div className="flex flex-wrap">
               <div className="w-full lg:w-12/12 px-4">
                 <div className="relative w-full mb-3">
@@ -397,6 +462,7 @@ export default function HomeSetting() {
                   <input
                     type="text"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                    name="headline"
                     onChange={(e)=>setShowcase({...showcase,headline:e.target.value})}
                     defaultValue={showcase.headline}
                   />
@@ -412,6 +478,7 @@ export default function HomeSetting() {
                   </label>
                   <input
                     type="text"
+                    name="item1Title"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                     onChange={(e)=>setShowcase({...showcase,item1Title:e.target.value})}
                     defaultValue={showcase.item1Title}
@@ -427,6 +494,7 @@ export default function HomeSetting() {
                     First Showcase Text
                   </label>
                   <input
+                    name="item1Subject"
                     type="text"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                     onChange={(e)=>setShowcase({...showcase,item1Subtext:e.target.value})}
@@ -444,6 +512,7 @@ export default function HomeSetting() {
                   </label>
                   <input
                     type="file"
+                    name="item1Image"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                   />
                 </div>
@@ -458,6 +527,7 @@ export default function HomeSetting() {
                   </label>
                   <input
                     type="text"
+                    name="item2Title"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                     onChange={(e)=>setShowcase({...showcase,item2Title:e.target.value})}
                     defaultValue={showcase.item2Title}
@@ -474,6 +544,7 @@ export default function HomeSetting() {
                   </label>
                   <input
                     type="text"
+                    name="item2Subtext"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                     onChange={(e)=>setShowcase({...showcase,item2Subtext:e.target.value})}
                     defaultValue={showcase.item2Subtext}
@@ -490,6 +561,7 @@ export default function HomeSetting() {
                   </label>
                   <input
                     type="file"
+                    name="item2Image"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                   />
                 </div>
@@ -503,6 +575,7 @@ export default function HomeSetting() {
                     Third Showcase Title
                   </label>
                   <input
+                    name="item3Title"
                     type="text"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                     onChange={(e)=>setShowcase({...showcase,item3Title:e.target.value})}
@@ -520,6 +593,7 @@ export default function HomeSetting() {
                   </label>
                   <input
                     type="text"
+                    name="item3Subtext"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                     onChange={(e)=>setShowcase({...showcase,item3Subtext:e.target.value})}
                     defaultValue={showcase.item3Subtext}
@@ -535,6 +609,7 @@ export default function HomeSetting() {
                     Third Showcase Image
                   </label>
                   <input
+                    name="item3Image"
                     type="file"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                   />
